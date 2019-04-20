@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ProjectReference Include="..\..\..\Convey.MessageBrokers\src\Convey.MessageBrokers\Convey.MessageBrokers.csproj" />
+    <ProjectReference Include="..\..\..\Convey.CQRS.Commands\src\Convey.CQRS.Commands\Convey.CQRS.Commands.csproj" />
+    <ProjectReference Include="..\..\..\Convey.CQRS.Events\src\Convey.CQRS.Events\Convey.CQRS.Events.csproj" />
+  </ItemGroup>
+  
+</Project>
