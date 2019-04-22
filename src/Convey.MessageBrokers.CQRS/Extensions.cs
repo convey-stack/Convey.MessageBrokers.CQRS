@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
+using Convey.MessageBrokers.CQRS.Dispatchers;
 using Convey.Types;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,6 +42,18 @@ namespace Convey.MessageBrokers.CQRS
             }, @namespace, queueName, onError);
 
             return busSubscriber;
+        }
+
+        public static IConveyBuilder AddServiceBusCommandDispatcher(this IConveyBuilder builder)
+        {
+            builder.Services.AddTransient<ICommandDispatcher, ServiceBusMessageDispatcher>();
+            return builder;
+        }
+        
+        public static IConveyBuilder AddServiceBusEventDispatcher(this IConveyBuilder builder)
+        {
+            builder.Services.AddTransient<IEventDispatcher, ServiceBusMessageDispatcher>();
+            return builder;
         }
     }
 }
