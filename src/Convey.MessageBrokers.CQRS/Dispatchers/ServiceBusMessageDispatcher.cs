@@ -15,10 +15,10 @@ namespace Convey.MessageBrokers.CQRS.Dispatchers
             _accessor = accessor;
         }
 
-        Task ICommandDispatcher.DispatchAsync<T>(T command)
-            => _busPublisher.SendAsync(command, _accessor.CorrelationContext ?? CorrelationContext.Empty);
+        public Task SendAsync<T>(T command) where T : class, ICommand
+            => Extensions.SendAsync(_busPublisher, command, _accessor.CorrelationContext ?? CorrelationContext.Empty);
 
-        Task IEventDispatcher.DispatchAsync<T>(T @event)
+        public Task PublishAsync<T>(T @event) where T : class, IEvent
             => _busPublisher.PublishAsync(@event, _accessor.CorrelationContext ?? CorrelationContext.Empty);
     }
 }
