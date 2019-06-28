@@ -16,7 +16,7 @@ namespace Convey.MessageBrokers.CQRS.Dispatchers
         }
 
         public Task SendAsync<T>(T command) where T : class, ICommand
-            => Extensions.SendAsync(_busPublisher, command, _accessor.CorrelationContext ?? CorrelationContext.Empty);
+            => _busPublisher.SendAsync(command, _accessor.CorrelationContext ?? CorrelationContext.Empty);
 
         public Task PublishAsync<T>(T @event) where T : class, IEvent
             => _busPublisher.PublishAsync(@event, _accessor.CorrelationContext ?? CorrelationContext.Empty);

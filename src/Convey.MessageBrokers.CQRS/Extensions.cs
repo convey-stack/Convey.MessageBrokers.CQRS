@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.MessageBrokers.CQRS.Dispatchers;
-using Convey.Types;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Convey.MessageBrokers.CQRS
@@ -21,7 +20,7 @@ namespace Convey.MessageBrokers.CQRS
             => busPublisher.PublishAsync(@event, context);
 
         public static IBusSubscriber SubscribeCommand<TCommand>(this IBusSubscriber busSubscriber,
-            Func<TCommand, ConveyException, object> onError = null) where TCommand : class, ICommand
+            Func<TCommand, Exception, object> onError = null) where TCommand : class, ICommand
         {
             busSubscriber.Subscribe(async (sp, command, ctx) =>
             {
@@ -33,7 +32,7 @@ namespace Convey.MessageBrokers.CQRS
         }
 
         public static IBusSubscriber SubscribeEvent<TEvent>(this IBusSubscriber busSubscriber,
-            Func<TEvent, ConveyException, object> onError = null) where TEvent : class, IEvent
+            Func<TEvent, Exception, object> onError = null) where TEvent : class, IEvent
         {
             busSubscriber.Subscribe(async (sp, @event, ctx) =>
             {
