@@ -1,9 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.MessageBrokers.CQRS.Dispatchers;
-using Convey.Types;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Convey.MessageBrokers.CQRS
@@ -20,26 +18,24 @@ namespace Convey.MessageBrokers.CQRS
             where TEvent : class, IEvent
             => busPublisher.PublishAsync(@event, context);
 
-        public static IBusSubscriber SubscribeCommand<TCommand>(this IBusSubscriber busSubscriber,
-            Func<TCommand, ConveyException, object> onError = null) where TCommand : class, ICommand
+        public static IBusSubscriber SubscribeCommand<T>(this IBusSubscriber busSubscriber) where T : class, ICommand
         {
-            busSubscriber.Subscribe(async (sp, command, ctx) =>
+            busSubscriber.Subscribe<T>(async (sp, command, ctx) =>
             {
-                var commandHandler = sp.GetService<ICommandHandler<TCommand>>();
+                var commandHandler = sp.GetService<ICommandHandler<T>>();
                 await commandHandler.HandleAsync(command);
-            }, onError);
+            });
 
             return busSubscriber;
         }
 
-        public static IBusSubscriber SubscribeEvent<TEvent>(this IBusSubscriber busSubscriber,
-            Func<TEvent, ConveyException, object> onError = null) where TEvent : class, IEvent
+        public static IBusSubscriber SubscribeEvent<T>(this IBusSubscriber busSubscriber) where T : class, IEvent
         {
-            busSubscriber.Subscribe(async (sp, @event, ctx) =>
+            busSubscriber.Subscribe<T>(async (sp, @event, ctx) =>
             {
-                var commandHandler = sp.GetService<IEventHandler<TEvent>>();
+                var commandHandler = sp.GetService<IEventHandler<T>>();
                 await commandHandler.HandleAsync(@event);
-            }, onError);
+            });
 
             return busSubscriber;
         }
