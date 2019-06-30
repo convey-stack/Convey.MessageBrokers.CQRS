@@ -19,26 +19,10 @@ namespace Convey.MessageBrokers.CQRS
             => busPublisher.PublishAsync(@event, context);
 
         public static IBusSubscriber SubscribeCommand<T>(this IBusSubscriber busSubscriber) where T : class, ICommand
-        {
-            busSubscriber.Subscribe<T>(async (sp, command, ctx) =>
-            {
-                var commandHandler = sp.GetService<ICommandHandler<T>>();
-                await commandHandler.HandleAsync(command);
-            });
-
-            return busSubscriber;
-        }
+            => busSubscriber.Subscribe<T>((sp, command, ctx) => sp.GetService<ICommandHandler<T>>().HandleAsync(command));
 
         public static IBusSubscriber SubscribeEvent<T>(this IBusSubscriber busSubscriber) where T : class, IEvent
-        {
-            busSubscriber.Subscribe<T>(async (sp, @event, ctx) =>
-            {
-                var commandHandler = sp.GetService<IEventHandler<T>>();
-                await commandHandler.HandleAsync(@event);
-            });
-
-            return busSubscriber;
-        }
+            => busSubscriber.Subscribe<T>((sp, command, ctx) => sp.GetService<IEventHandler<T>>().HandleAsync(command));
 
         public static IConveyBuilder AddServiceBusCommandDispatcher(this IConveyBuilder builder)
         {
