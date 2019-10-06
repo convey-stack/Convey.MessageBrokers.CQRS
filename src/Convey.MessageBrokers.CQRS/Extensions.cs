@@ -8,13 +8,13 @@ namespace Convey.MessageBrokers.CQRS
 {
     public static class Extensions
     {
-        public static Task SendAsync<TCommand>(this IPublisher publisher, TCommand command, ICorrelationContext context)
+        public static Task SendAsync<TCommand>(this IPublisher publisher, TCommand command, object context)
             where TCommand : class, ICommand
-            => publisher.PublishAsync(command, context);
+            => publisher.PublishAsync(command, context: context);
 
-        public static Task PublishAsync<TEvent>(this IPublisher publisher, TEvent @event, ICorrelationContext context)
+        public static Task PublishAsync<TEvent>(this IPublisher publisher, TEvent @event, object context)
             where TEvent : class, IEvent
-            => publisher.PublishAsync(@event, context);
+            => publisher.PublishAsync(@event, context: context);
 
         public static ISubscriber SubscribeCommand<T>(this ISubscriber subscriber) where T : class, ICommand
             => subscriber.Subscribe<T>((sp, command, ctx) => sp.GetService<ICommandHandler<T>>().HandleAsync(command));
