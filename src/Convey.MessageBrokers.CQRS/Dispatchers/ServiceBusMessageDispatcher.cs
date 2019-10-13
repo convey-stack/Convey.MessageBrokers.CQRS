@@ -6,19 +6,19 @@ namespace Convey.MessageBrokers.CQRS.Dispatchers
 {
     internal sealed class ServiceBusMessageDispatcher : ICommandDispatcher, IEventDispatcher
     {
-        private readonly IPublisher _publisher;
+        private readonly IBusPublisher _busPublisher;
         private readonly ICorrelationContextAccessor _accessor;
 
-        public ServiceBusMessageDispatcher(IPublisher publisher, ICorrelationContextAccessor accessor)
+        public ServiceBusMessageDispatcher(IBusPublisher busPublisher, ICorrelationContextAccessor accessor)
         {
-            _publisher = publisher;
+            _busPublisher = busPublisher;
             _accessor = accessor;
         }
 
         public Task SendAsync<T>(T command) where T : class, ICommand
-            => _publisher.SendAsync(command, _accessor.CorrelationContext);
+            => _busPublisher.SendAsync(command, _accessor.CorrelationContext);
 
         public Task PublishAsync<T>(T @event) where T : class, IEvent
-            => _publisher.PublishAsync(@event, _accessor.CorrelationContext);
+            => _busPublisher.PublishAsync(@event, _accessor.CorrelationContext);
     }
 }
